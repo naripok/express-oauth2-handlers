@@ -1,7 +1,7 @@
 {
   "name": "@naripok/express-oauth2-handlers",
   "repository": "naripok/express-oauth2-handlers",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "A package that simplifies working with OAuth 2.0 tokens and ExpressJS on GCP",
   "main": "index.js",
   "engines": {
@@ -9,23 +9,12 @@
   },
   "files": [
     "*.js",
-    "!system-test",
-    "!samples",
-    "!test",
-    "AUTHORS",
-    "CONTRIBUTORS",
     "COPYING"
   ],
   "scripts": {
     "lint": "eslint *.js test/*.js",
     "fix": "eslint --fix *.js test/*.js",
-    "test": "npm run lint && nyc ava test/*.test.js",
-    "wrap-gcf": "cp *.js system-test/function/lib/",
-    "wrap-gae": "cp *.js system-test/app/lib/",
-    "docs": "echo 'no jsdocs'",
-    "docs-test": "echo 'no jsdocs'",
-    "system-test": "echo 'no system-test'",
-    "samples-test": "echo 'no samples-test'"
+    "docs": "echo 'no jsdocs'"
   },
   "author": "Ace Nassri (anassri@google.com)",
   "license": "Apache-2.0",
