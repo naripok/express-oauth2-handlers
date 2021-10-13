@@ -1,13 +1,7 @@
 # Express OAuth 2 handlers
 
 This library provides pre-built boilerplate code for obtaining and storing OAuth 2.0 tokens on Google Cloud Platform.
-
-![release: alpha](https://img.shields.io/badge/release-alpha-orange.svg "release: alpha") <a href="https://www.npmjs.com/package/@google-cloud/express-oauth2-handlers"><img src="https://img.shields.io/npm/v/@google-cloud/express-oauth2-handlers.svg" alt="npm Version"></a>
-
-## Installation
-```
-npm install @google-cloud/express-oauth2-handlers
-```
+It forks `@google-cloud/express-oauth2-handlers` and change it to use `firestore` instead of `datastore`
 
 ## Configuration
 In order to use the library, several variables must be set. These values can be stored as Linux environment variables.
@@ -37,11 +31,11 @@ The following values can be specified during either the configuration or [initia
 ###### `TOKEN_STORAGE_METHOD`
 Specify how OAuth 2.0 tokens will be stored. *Must* be one of the following values:
 - `cookie` Stores tokens on a _per-user basis_ using browser cookies.
-- `datastore` Stores tokens _globally_ using [Cloud Datastore](https://cloud.google.com/datastore).
+- `firestore` Stores tokens _globally_ using [Cloud Firestore](https://cloud.google.com/firestore).
 
 We recommend using `cookie` unless you have code running in a non-HTTP environment, as this delegates authentication to the user's browser.
 
-The `datastore` option is best when part or all of your code isn't triggered by HTTP. **However, you must manually verify the authenticity of all `datastore` requests yourself.**
+The `firestore` option is best when part or all of your code isn't triggered by HTTP. **However, you must manually verify the authenticity of all `firestore` requests yourself.**
 
 ###### `DEFAULT_SCOPES`
 A comma-separated list (such as `scope1,scope2,scope3`) of OAuth 2.0 scopes to use. See [this page](https://developers.google.com/identity/protocols/googlescopes) for a list of OAuth 2.0 scopes supported by Google APIs.
@@ -86,14 +80,14 @@ const Auth = require('@google-cloud/express-oauth2-handlers');
 // Cookie
 const auth = Auth('cookie', ['profile', 'email']);
 
-// Datastore
-const auth = Auth('datastore', ['profile', 'email'], 'email');
+// Firestore
+const auth = Auth('firestore', ['profile', 'email'], 'email');
 ```
 
 ##### Storage Methods
 Use the following chart to decide which storage method is right for your use case.
 
-|                                  | `cookie` | `datastore` |
+|                                  | `cookie` | `firestore` |
 | -------------------------------- | -------- | ------- |
 | Requires user IDs?               | **No**   | Yes |
 | Requires end-user interaction? ^ | Yes      | **No** |
@@ -116,7 +110,7 @@ An Express-like request object for HTTP invocations; `null` otherwise.
 An Express-like response object for HTTP invocations; `null` otherwise.
 
 `userId`
-_Datastore token-storage only._ A unique User ID specifying which user to associate the token with.
+_Firestore token-storage only._ A unique User ID specifying which user to associate the token with.
 
 ##### Returns
 `true` if the authentication succeeded, `false` otherwise.
@@ -132,7 +126,7 @@ An Express-like request object for HTTP invocations; `null` otherwise.
 An Express-like response object for HTTP invocations; `null` otherwise.
 
 `userId`
-_Datastore token-storage only._ A unique User ID specifying which user to associate the token with.
+_Firestore token-storage only._ A unique User ID specifying which user to associate the token with.
 
 ##### Returns
 A `Promise` containing a scoped token if the authentication succeeds; a rejected `Promise` containing an `Error` otherwise.
@@ -164,7 +158,7 @@ An Express-like request object for HTTP invocations; `null` otherwise.
 An Express-like response object for HTTP invocations; `null` otherwise.
 
 `userId`
-_Datastore token-storage only._ A unique User ID specifying which user the auth client will associate with.
+_Firestore token-storage only._ A unique User ID specifying which user the auth client will associate with.
 
 ##### Returns
 A `Promise` containing a reference to the current user's authenticated OAuth 2.0 client.
@@ -180,7 +174,7 @@ An Express-like request object for HTTP invocations; `null` otherwise.
 An Express-like response object for HTTP invocations; `null` otherwise.
 
 `userId`
-_Datastore token-storage only._ A unique User ID specifying which user's non-scoped token should be fetched.
+_Firestore token-storage only._ A unique User ID specifying which user's non-scoped token should be fetched.
 
 ##### Returns
 A `Promise` containing the currently-authenticated user's OAuth 2.0 token.
@@ -225,7 +219,7 @@ An Express-like response object for HTTP invocations; `null` otherwise.
 The scoped token to associate with the specified user.
 
 `userId`
-_Datastore token-storage only._ A unique User ID specifying which user to associate the token with.
+_Firestore token-storage only._ A unique User ID specifying which user to associate the token with.
 
 ##### Returns
 A `Promise` that resolves once the token is stored.
@@ -241,7 +235,7 @@ An Express-like request object for HTTP invocations; `null` otherwise.
 An Express-like response object for HTTP invocations; `null` otherwise.
 
 `userId`
-_Datastore token-storage only._ A unique User ID specifying which user's scoped token should be fetched.
+_Firestore token-storage only._ A unique User ID specifying which user's scoped token should be fetched.
 
 ##### Returns
 A `Promise` containing the scoped token.

@@ -15,13 +15,13 @@
 
 const cookie = require('cookie');
 const config = require('./config');
-const {Datastore} = require('@google-cloud/datastore');
+const {Firestore} = require('@google-cloud/firestore');
 const {OAuth2Client} = require('google-auth-library');
 const OAuth2Api = require('googleapis').oauth2_v2.Oauth2;
 
 const {__wrapReqRes, __cacheGet, __cacheSet} = require('./miscHelpers');
 const cryptoHelpers = require('./cryptoHelpers');
-const datastore = new Datastore();
+const firestore = new Firestore();
 
 const __getOAuth2Client = (req, res) => {
   if (__cacheGet(req, res, 'client')) {
@@ -94,11 +94,10 @@ const __storeScopedToken = async (req, res, scopedToken, userId) => {
   );
 
   // Store token
-  if (config.STORAGE_METHOD === 'datastore') {
-    return datastore.save({
-      key: datastore.key(['oauth2token', userId]),
+  if (config.STORAGE_METHOD === 'firestore') {
+    const doc = firestore.doc(`oauth2token/${userId}`)
+    return doc.set({
       data: encryptedToken,
-      excludeFromIndexes: ['token'],
     });
   } else if (config.STORAGE_METHOD === 'cookie' && config.IS_HTTP) {
     // User ID not required
@@ -119,11 +118,12 @@ const __authenticate = (req, res, userId) => {
   }
 
   // Get + validate token, then authenticate with it
-  if (config.STORAGE_METHOD === 'datastore') {
-    return datastore
-      .get(datastore.key(['oauth2token', userId]))
-      .then(tokens => {
-        return __validateOrRefreshToken(req, res, tokens[0], userId);
+  if (config.STORAGE_METHOD === 'firestore') {
+    const doc = firestore.doc(`oauth2token/${userId}`)
+    return doc
+      .get()
+      .then(({data}) => {
+        return __validateOrRefreshToken(req, res, data, userId);
       });
   } else if (config.STORAGE_METHOD === 'cookie' && config.IS_HTTP) {
     const scopedToken = JSON.parse(

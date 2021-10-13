@@ -92,7 +92,7 @@ exports.USER_ID_FORMAT = nconf.get('USER_ID_FORMAT');
 
 /* Computed values */
 exports.GCP_PROJECT = nconf.get('GCP_PROJECT');
-exports.NEEDS_USER_ID = exports.STORAGE_METHOD === 'datastore';
+exports.NEEDS_USER_ID = exports.STORAGE_METHOD === 'firestore';
 const __triggerType = process.env.FUNCTION_TRIGGER_TYPE;
 
 exports.IS_HTTP =
@@ -101,9 +101,9 @@ exports.IS_HTTP =
 /* Errors */
 exports.ERROR_UNKNOWN_USER = 'User referenced by user ID has not registered.';
 exports.ERROR_STORAGE_METHOD =
-  'Unknown or unsupported STORAGE_METHOD value. Must be "datastore" or "cookie", and "cookie" can only works in HTTP contexts.';
+  'Unknown or unsupported STORAGE_METHOD value. Must be "firestore" or "cookie", and "cookie" can only works in HTTP contexts.';
 exports.ERROR_NEEDS_USERID =
-  'A userId is required to store tokens in datastore.';
+  'A userId is required to store tokens in firestore.';
 exports.ERROR_CALLBACK_ARG_TYPES =
   'If cb() is provided options, both "onSuccess" and "onFailure" must be provided (as redirect URLs OR callbacks)';
 exports.ERROR_SCOPED_ONLY =
