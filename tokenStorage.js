@@ -96,9 +96,7 @@ const __storeScopedToken = async (req, res, scopedToken, userId) => {
   // Store token
   if (config.STORAGE_METHOD === 'firestore') {
     const doc = firestore.doc(`oauth2token/${userId}`)
-    return doc.set({
-      data: encryptedToken,
-    });
+    return doc.set(encryptedToken);
   } else if (config.STORAGE_METHOD === 'cookie' && config.IS_HTTP) {
     // User ID not required
     res.cookie('oauth2token', JSON.stringify(encryptedToken), {secure: true});
@@ -122,8 +120,8 @@ const __authenticate = (req, res, userId) => {
     const doc = firestore.doc(`oauth2token/${userId}`)
     return doc
       .get()
-      .then(({data}) => {
-        return __validateOrRefreshToken(req, res, data, userId);
+      .then((data) => {
+        return __validateOrRefreshToken(req, res, data.data(), userId);
       });
   } else if (config.STORAGE_METHOD === 'cookie' && config.IS_HTTP) {
     const scopedToken = JSON.parse(
